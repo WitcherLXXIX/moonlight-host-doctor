@@ -11,6 +11,7 @@ from .system import System
 
 class Status(str, Enum):
     PASS = "pass"
+    INFO = "info"  # a fact worth explaining that is not a problem
     WARN = "warn"
     FAIL = "fail"
     SKIP = "skip"  # could not be determined here, for example a command needs root

@@ -13,6 +13,7 @@ from .system import System
 
 LABELS = {
     Status.PASS: "[ OK ]",
+    Status.INFO: "[INFO]",
     Status.WARN: "[WARN]",
     Status.FAIL: "[FAIL]",
     Status.SKIP: "[SKIP]",
@@ -41,7 +42,7 @@ def format_text(results: list[Result]) -> str:
     counts = {s: sum(r.status is s for r in results) for s in Status}
     lines.append("")
     lines.append(
-        f"{counts[Status.PASS]} ok, {counts[Status.WARN]} warnings, "
+        f"{counts[Status.PASS]} ok, {counts[Status.INFO]} info, {counts[Status.WARN]} warnings, "
         f"{counts[Status.FAIL]} failed, {counts[Status.SKIP]} skipped"
     )
     return "\n".join(lines)

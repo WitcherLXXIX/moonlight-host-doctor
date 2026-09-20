@@ -55,6 +55,7 @@ them, so it skips itself with a note. This works the same in bash, zsh and fish.
 | `listening` | Sunshine is listening on its TCP ports | no |
 | `firewall` | ufw or firewalld allows the TCP and UDP ports | ufw: yes |
 | `wol` | Wired NIC is set to wake on a magic packet | to confirm at the NIC: yes |
+| `lock` | Whether the KDE screen lock will greet a Moonlight client after a wake or idle (information only, KDE Plasma only) | no |
 | `dns` | systemd-resolved and NetworkManager agree about `/etc/resolv.conf` (a leftover plain file is the usual cause of Tailscale's "wired together incorrectly" warning) | no |
 | `tailscale` | Tailscale is connected, reports no problems, its MagicDNS name resolves here, and ufw admits tailnet clients (skipped if Tailscale is not installed) | ufw part: yes |
 
