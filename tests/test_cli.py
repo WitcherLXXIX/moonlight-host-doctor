@@ -8,7 +8,7 @@ from moonlight_host_doctor.model import CHECKS, Status
 
 
 def test_all_checks_are_registered_in_running_order():
-    assert list(CHECKS) == ["service", "listening", "firewall", "wol", "tailscale"]
+    assert list(CHECKS) == ["service", "listening", "firewall", "wol", "dns", "tailscale"]
 
 
 def test_a_crashing_check_becomes_a_warning_and_does_not_hide_the_others(make, monkeypatch):
@@ -18,7 +18,7 @@ def test_a_crashing_check_becomes_a_warning_and_does_not_hide_the_others(make, m
     monkeypatch.setitem(CHECKS, "service", boom)
     results = run_checks(make({}))
     assert results[0].status is Status.WARN and "bad parse" in results[0].detail
-    assert {r.check for r in results} >= {"listening", "firewall", "wol", "tailscale"}
+    assert {r.check for r in results} >= {"listening", "firewall", "wol", "dns", "tailscale"}
 
 
 def test_exit_code_is_1_only_when_something_failed(make, capsys):
