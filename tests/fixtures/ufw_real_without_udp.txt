@@ -1,0 +1,25 @@
+Status: active
+
+To                         Action      From
+--                         ------      ----
+27031:27036/udp            ALLOW       192.168.1.0/24             # Steam Remote Play
+27036/tcp                  ALLOW       192.168.1.0/24             # Steam Remote Play
+27031:27036/udp on enp5s0  ALLOW       Anywhere                   # Steam Remote Play (v4+v6)
+27036/tcp on enp5s0        ALLOW       Anywhere                   # Steam Remote Play TCP (v4+v6)
+Anywhere on virbr0         ALLOW       Anywhere
+47984/tcp                  ALLOW       Anywhere                   # Sunshine legacy HTTPS
+47989/tcp                  ALLOW       Anywhere                   # Sunshine HTTP/pairing
+47990/tcp                  ALLOW       Anywhere                   # Sunshine Web UI
+48010/tcp                  ALLOW       Anywhere                   # Sunshine RTSP
+27031:27036/udp (v6) on enp5s0 ALLOW       Anywhere (v6)              # Steam Remote Play (v4+v6)
+27036/tcp (v6) on enp5s0   ALLOW       Anywhere (v6)              # Steam Remote Play TCP (v4+v6)
+Anywhere (v6) on virbr0    ALLOW       Anywhere (v6)
+47984/tcp (v6)             ALLOW       Anywhere (v6)              # Sunshine legacy HTTPS
+47989/tcp (v6)             ALLOW       Anywhere (v6)              # Sunshine HTTP/pairing
+47990/tcp (v6)             ALLOW       Anywhere (v6)              # Sunshine Web UI
+48010/tcp (v6)             ALLOW       Anywhere (v6)              # Sunshine RTSP
+
+Anywhere                   ALLOW FWD   Anywhere on virbr0
+Anywhere on virbr0         ALLOW FWD   Anywhere
+Anywhere (v6)              ALLOW FWD   Anywhere (v6) on virbr0
+Anywhere (v6) on virbr0    ALLOW FWD   Anywhere (v6)

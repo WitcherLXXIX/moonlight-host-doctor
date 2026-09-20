@@ -34,11 +34,27 @@ def test_listening_fails_and_names_missing_ports(make):
 
 
 def test_parse_ufw_expands_lists_ranges_and_protocols():
-    active, rules = parse_ufw(fixture("ufw_active_allowed.txt"))
+    active, rules = parse_ufw(fixture("ufw_active_real.txt"))
     assert active
     assert ("tcp", 47989, 47989) in rules
     assert ("udp", 47998, 48000) in rules
     assert missing_ports(rules) == {}
+
+
+def test_parse_ufw_counts_interface_scoped_rules_but_not_forward_rules():
+    text = (
+        "Status: active\n\n"
+        "47989/tcp on enp5s0        ALLOW       Anywhere\n"
+        "47984/tcp                  ALLOW FWD   Anywhere on virbr0\n"
+    )
+    _, rules = parse_ufw(text)
+    assert rules == [("tcp", 47989, 47989)]
+
+
+def test_the_required_ports_come_from_sunshines_offsets_not_a_guessed_list():
+    from sunshine_doctor.checks.ports import TCP_PORTS, UDP_PORTS
+    assert TCP_PORTS == (47984, 47989, 48010)
+    assert UDP_PORTS == (47998, 47999, 48000)  # no UDP 48010: Sunshine's RTSP is TCP
 
 
 def test_parse_ufw_treats_a_rule_without_protocol_as_both():
@@ -58,15 +74,15 @@ def test_parse_ufw_ignores_ipv6_duplicates_deny_rules_and_profiles():
 
 
 def test_ufw_with_all_ports_allowed_passes(make):
-    system = make({"ufw status": ok(fixture("ufw_active_allowed.txt"))})
+    system = make({"ufw status": ok(fixture("ufw_active_real.txt"))})
     assert check_firewall(system)[0].status is Status.PASS
 
 
 def test_ufw_missing_udp_fails_with_a_copyable_fix(make):
-    system = make({"ufw status": ok(fixture("ufw_active_missing_udp.txt"))})
+    system = make({"ufw status": ok(fixture("ufw_real_without_udp.txt"))})
     [result] = check_firewall(system)
     assert result.status is Status.FAIL
-    assert result.fix == ("sudo ufw allow 47998,47999,48000,48002,48010/udp",)
+    assert result.fix == ("sudo ufw allow 47998,47999,48000/udp",)
 
 
 def test_inactive_ufw_passes(make):

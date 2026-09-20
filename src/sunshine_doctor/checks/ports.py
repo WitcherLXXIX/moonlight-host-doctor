@@ -3,6 +3,10 @@
 Assumes Sunshine's default base port (47989). The UDP streaming ports only exist
 while a stream is running, so they are checked against the firewall and never
 against listening sockets.
+
+Offsets from the base port are taken from Sunshine's source (src/nvhttp.h, src/rtsp.h,
+src/stream.h): HTTPS -5, HTTP 0 and RTSP +21 are TCP; video +9, control +10 and
+audio +11 are UDP. The web UI (+1) and microphone (+13) ports are not needed to stream.
 """
 
 from __future__ import annotations
@@ -17,8 +21,9 @@ LISTEN_TITLE = "Sunshine listening ports"
 FIREWALL_ID = "firewall"
 FIREWALL_TITLE = "Firewall"
 
-TCP_PORTS = (47984, 47989, 48010)
-UDP_PORTS = (47998, 47999, 48000, 48002, 48010)
+BASE_PORT = 47989
+TCP_PORTS = tuple(BASE_PORT + offset for offset in (-5, 0, 21))  # 47984 47989 48010
+UDP_PORTS = tuple(BASE_PORT + offset for offset in (9, 10, 11))  # 47998 47999 48000
 
 # (protocol, first port, last port)
 Rule = tuple[str, int, int]
@@ -48,14 +53,18 @@ def _port_spec(spec: str) -> list[tuple[int, int]] | None:
 
 
 def parse_ufw(text: str) -> tuple[bool, list[Rule]]:
-    """Returns (active, allow rules) from `ufw status` output. IPv6 rules are skipped."""
+    """Returns (active, allow rules) from `ufw status` output.
+
+    IPv6 rules are skipped, and so are FWD/OUT rules. A rule limited to one interface
+    ("on enp5s0") or one source still counts, so a restricted rule can hide a real gap.
+    """
     if re.search(r"^Status:\s*inactive", text, re.MULTILINE):
         return False, []
     rules: list[Rule] = []
     for line in text.splitlines():
         if "(v6)" in line:
             continue
-        match = re.match(r"^(\S+)\s+ALLOW(?:\s+IN)?\s", line)
+        match = re.match(r"^(\S+)(?:\s+on\s+\S+)?\s+ALLOW(?:\s+IN)?\s+(?!FWD|OUT)", line)
         if not match:
             continue
         spec = match.group(1)

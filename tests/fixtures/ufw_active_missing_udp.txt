@@ -1,6 +1,0 @@
-Status: active
-
-To                         Action      From
---                         ------      ----
-22/tcp                     ALLOW       Anywhere
-47984,47989,48010/tcp      ALLOW       Anywhere

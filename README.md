@@ -28,14 +28,18 @@ Options: `--only CHECK` (repeatable), `--json`, `--list`. Exit status is 1 if an
 
 ## Limits you should know about
 
-- Assumes Sunshine's default base port (47989).
+- Assumes Sunshine's default base port (47989). The required ports come from offsets in Sunshine's source:
+  TCP 47984, 47989, 48010 and UDP 47998, 47999, 48000. The web UI (47990) and mic (48002) ports are not required.
+- A firewall rule limited to one source or interface still counts as allowing the port, so a rule
+  that only covers your LAN will not be flagged for a client arriving over Tailscale.
 - The BIOS/UEFI wake-on-LAN option cannot be read from Linux, so a passing `wol` check does not
   guarantee waking from a full power-off.
 - UDP streaming ports only exist during a stream, so they are checked against firewall rules, not sockets.
 - Raw nftables/iptables rules are not checked, and neither are IPv6 rules.
 - Verified on one machine: CachyOS, KDE Plasma (Wayland), NVIDIA, ufw, NetworkManager, Tailscale.
-  The ufw and firewalld parsers are tested against hand-written samples, not captured output
-  (see `tests/fixtures/README.md`). Reports and real output from other setups are the most useful contribution.
+  The ufw parser is tested against real output from that machine; the firewalld parser only against
+  strings written for the tests (see `tests/fixtures/README.md`). Reports and real output from other
+  setups are the most useful contribution.
 
 ## Development
 
