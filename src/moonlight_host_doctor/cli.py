@@ -8,6 +8,7 @@ import sys
 
 from . import checks  # noqa: F401  (registers the checks)
 from .model import CHECKS, Result, Status
+from .redact import redact_result
 from .system import System
 
 LABELS = {
@@ -55,6 +56,10 @@ def main(argv: list[str] | None = None, system: System | None = None) -> int:
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--only", action="append", metavar="CHECK", help="run only this check (repeatable)")
     parser.add_argument("--list", action="store_true", help="list check names and exit")
+    parser.add_argument(
+        "--redact", action="store_true",
+        help="mask Tailscale names, IP and MAC addresses so the output is safe to post publicly",
+    )
     args = parser.parse_args(argv)
 
     if args.list:
@@ -65,6 +70,8 @@ def main(argv: list[str] | None = None, system: System | None = None) -> int:
         parser.error(f"unknown check: {', '.join(unknown)} (see --list)")
 
     results = run_checks(system or System(), args.only)
+    if args.redact:
+        results = [redact_result(r) for r in results]
     if args.json:
         print(json.dumps([r.as_dict() for r in results], indent=2))
     else:

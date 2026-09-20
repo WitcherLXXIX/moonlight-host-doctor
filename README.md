@@ -25,7 +25,14 @@ Status: **early, v0.1.** Not affiliated with LizardByte or Moonlight.
 | `wol` | Wired NIC is set to wake on a magic packet | to confirm at the NIC: yes |
 | `tailscale` | Tailscale is connected, reports no problems, its MagicDNS name resolves here, and ufw admits tailnet clients (skipped if Tailscale is not installed) | ufw part: yes |
 
-Options: `--only CHECK` (repeatable), `--json`, `--list`. Exit status is 1 if any check failed.
+Options: `--only CHECK` (repeatable), `--json`, `--list`, `--redact`. Exit status is 1 if any check failed.
+
+### Posting output publicly
+
+Use `--redact` when you paste output into an issue or forum. It masks Tailscale names, IPv4 and IPv6
+addresses and MAC addresses. It does **not** mask your hostname, interface names, or NetworkManager
+connection names (people sometimes name a connection after their Wi-Fi network), so read the output
+once before you post it.
 
 ## Limits you should know about
 
