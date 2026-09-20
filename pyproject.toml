@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "sunshine-doctor"
+name = "moonlight-host-doctor"
 version = "0.1.0"
 description = "Read-only diagnostics for a Sunshine game-streaming host on Linux"
 readme = "README.md"
@@ -15,10 +15,10 @@ dependencies = []
 test = ["pytest"]
 
 [project.scripts]
-sunshine-doctor = "sunshine_doctor.cli:main"
+moonlight-host-doctor = "moonlight_host_doctor.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/sunshine_doctor"]
+packages = ["src/moonlight_host_doctor"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

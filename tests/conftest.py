@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from sunshine_doctor.system import CommandResult, System
+from moonlight_host_doctor.system import CommandResult, System
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

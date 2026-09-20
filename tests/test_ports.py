@@ -1,6 +1,6 @@
 from conftest import fail, fixture, ok
 
-from sunshine_doctor.checks.ports import (
+from moonlight_host_doctor.checks.ports import (
     check_firewall,
     check_listening,
     missing_ports,
@@ -8,7 +8,7 @@ from sunshine_doctor.checks.ports import (
     parse_listening_tcp,
     parse_ufw,
 )
-from sunshine_doctor.model import Status
+from moonlight_host_doctor.model import Status
 
 
 def test_parse_listening_tcp_reads_real_ss_output():
@@ -52,7 +52,7 @@ def test_parse_ufw_counts_interface_scoped_rules_but_not_forward_rules():
 
 
 def test_the_required_ports_come_from_sunshines_offsets_not_a_guessed_list():
-    from sunshine_doctor.checks.ports import TCP_PORTS, UDP_PORTS
+    from moonlight_host_doctor.checks.ports import TCP_PORTS, UDP_PORTS
     assert TCP_PORTS == (47984, 47989, 48010)
     assert UDP_PORTS == (47998, 47999, 48000)  # no UDP 48010: Sunshine's RTSP is TCP
 

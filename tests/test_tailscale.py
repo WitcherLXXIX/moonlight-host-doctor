@@ -3,9 +3,9 @@ import json
 import pytest
 from conftest import fail, fixture, ok
 
-from sunshine_doctor.checks.ports import UfwRule
-from sunshine_doctor.checks.tailscale import check_tailscale, reaches_tailnet
-from sunshine_doctor.model import Status
+from moonlight_host_doctor.checks.ports import UfwRule
+from moonlight_host_doctor.checks.tailscale import check_tailscale, reaches_tailnet
+from moonlight_host_doctor.model import Status
 
 STATUS = "tailscale status --json"
 LOOKUP = ("getent", "hosts", "linux.tail-example.ts.net")

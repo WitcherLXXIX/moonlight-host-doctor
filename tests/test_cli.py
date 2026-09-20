@@ -3,8 +3,8 @@ import json
 import pytest
 from conftest import ok
 
-from sunshine_doctor.cli import main, run_checks
-from sunshine_doctor.model import CHECKS, Status
+from moonlight_host_doctor.cli import main, run_checks
+from moonlight_host_doctor.model import CHECKS, Status
 
 
 def test_all_checks_are_registered_in_running_order():

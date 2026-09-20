@@ -1,7 +1,7 @@
 from conftest import fail, fixture, ok
 
-from sunshine_doctor.checks.service import check_service, parse_units
-from sunshine_doctor.model import Status
+from moonlight_host_doctor.checks.service import check_service, parse_units
+from moonlight_host_doctor.model import Status
 
 LIST = "systemctl --user list-units --type=service --all --plain --no-legend --no-pager"
 

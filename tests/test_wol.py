@@ -1,12 +1,12 @@
 from conftest import fixture, ok
 
-from sunshine_doctor.checks.wol import (
+from moonlight_host_doctor.checks.wol import (
     check_wol,
     parse_active_connections,
     parse_ethtool_wol,
     wired_interfaces,
 )
-from sunshine_doctor.model import Status
+from moonlight_host_doctor.model import Status
 
 NET = "/sys/class/net"
 NMCLI_ACTIVE = "nmcli -t -f NAME,TYPE,DEVICE connection show --active"

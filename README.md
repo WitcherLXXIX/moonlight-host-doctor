@@ -1,15 +1,15 @@
-# sunshine-doctor
+# moonlight-host-doctor
 
 Read-only checks for a [Sunshine](https://github.com/LizardByte/Sunshine) game-streaming host on Linux.
 When a Moonlight client cannot connect or cannot wake the host, it tells you which layer is broken and
 prints the command that fixes it. It never runs a fix itself and needs no root for most checks.
 
 ```
-$ sunshine-doctor
+$ moonlight-host-doctor
 [ OK ] Sunshine service: app-dev.lizardbyte.app.Sunshine.service is running.
 [ OK ] Sunshine listening ports: TCP ports are open on this machine.
 [SKIP] Firewall: ufw is installed but its rules need root to read.
-       fix: sudo sunshine-doctor --only firewall
+       fix: sudo moonlight-host-doctor --only firewall
 [ OK ] Wake-on-LAN (enp6s0): NetworkManager sets "Wired connection 2" to magic. ...
 ```
 
@@ -51,7 +51,7 @@ python -m venv .venv && .venv/bin/pip install -e '.[test]'
 .venv/bin/python -m pytest
 ```
 
-Checks read the machine only through `System` (`src/sunshine_doctor/system.py`), so tests use saved
+Checks read the machine only through `System` (`src/moonlight_host_doctor/system.py`), so tests use saved
 command output and never need real hardware. To add a check, write a function decorated with
 `@check("id")` that returns a list of `Result`, and import its module in `checks/__init__.py`.
 

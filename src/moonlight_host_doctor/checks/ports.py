@@ -155,7 +155,7 @@ def check_firewall(system: System) -> list[Result]:
                 Result(
                     FIREWALL_ID, FIREWALL_TITLE, Status.SKIP,
                     "ufw is installed but its rules need root to read.",
-                    ("sudo sunshine-doctor --only firewall",),
+                    ("sudo moonlight-host-doctor --only firewall",),
                 )
             ]
         active, rules = parse_ufw(status.stdout)

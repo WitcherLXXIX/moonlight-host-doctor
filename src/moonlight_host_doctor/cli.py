@@ -27,7 +27,7 @@ def run_checks(system: System, only: list[str] | None = None) -> list[Result]:
             results.extend(fn(system))
         except Exception as error:  # a broken check must not hide the others
             results.append(
-                Result(check_id, check_id, Status.WARN, f"The check crashed: {error!r}. This is a bug in sunshine-doctor.")
+                Result(check_id, check_id, Status.WARN, f"The check crashed: {error!r}. This is a bug in moonlight-host-doctor.")
             )
     return results
 
@@ -48,7 +48,7 @@ def format_text(results: list[Result]) -> str:
 
 def main(argv: list[str] | None = None, system: System | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="sunshine-doctor",
+        prog="moonlight-host-doctor",
         description="Read-only checks for a Sunshine game-streaming host. It prints fix "
         "commands but never runs them.",
     )

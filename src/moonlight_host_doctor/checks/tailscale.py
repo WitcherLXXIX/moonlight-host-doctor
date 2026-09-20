@@ -81,7 +81,7 @@ def _firewall_result(system: System) -> Result:
     shown = system.run(["ufw", "status"])
     if shown is None or shown.returncode != 0:
         return Result(ID, title, Status.SKIP, "ufw's rules need root to read.",
-                      ("sudo sunshine-doctor --only tailscale",))
+                      ("sudo moonlight-host-doctor --only tailscale",))
     active, rules = parse_ufw_rules(shown.stdout)
     if not active:
         return Result(ID, title, Status.PASS, "ufw is inactive, so it blocks nothing.")
