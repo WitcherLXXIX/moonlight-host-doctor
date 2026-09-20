@@ -31,6 +31,13 @@ def parse_units(text: str) -> list[Unit]:
 
 @check(ID)
 def check_service(system: System) -> list[Result]:
+    if system.is_root():
+        # `systemctl --user` would ask root's own session, not the user who runs Sunshine.
+        return [
+            Result(ID, TITLE, Status.SKIP,
+                   "Running as root, which cannot see your user services. Run this check without sudo.",
+                   ("moonlight-host-doctor --only service",))
+        ]
     listed = system.run(
         [
             "systemctl", "--user", "list-units", "--type=service", "--all",

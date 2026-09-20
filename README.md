@@ -9,11 +9,43 @@ $ moonlight-host-doctor
 [ OK ] Sunshine service: app-dev.lizardbyte.app.Sunshine.service is running.
 [ OK ] Sunshine listening ports: TCP ports are open on this machine.
 [SKIP] Firewall: ufw is installed but its rules need root to read.
-       fix: sudo moonlight-host-doctor --only firewall
+       fix: sudo env "PATH=$PATH" moonlight-host-doctor --only firewall
 [ OK ] Wake-on-LAN (enp6s0): NetworkManager sets "Wired connection 2" to magic. ...
 ```
 
 Status: **early, v0.1.** Not affiliated with LizardByte or Moonlight.
+
+## Install
+
+Needs Python 3.10 or newer and nothing else. It is not on PyPI yet, so install straight from GitHub.
+[pipx](https://pipx.pypa.io) keeps it in its own environment:
+
+```
+pipx install git+https://github.com/WitcherLXXIX/moonlight-host-doctor
+```
+
+`pipx` is packaged by most distributions (`sudo pacman -S python-pipx` on Arch and CachyOS). Without it,
+a plain virtual environment works the same way:
+
+```
+python -m venv ~/.local/share/moonlight-host-doctor
+~/.local/share/moonlight-host-doctor/bin/pip install git+https://github.com/WitcherLXXIX/moonlight-host-doctor
+~/.local/share/moonlight-host-doctor/bin/moonlight-host-doctor
+```
+
+Remove it with `pipx uninstall moonlight-host-doctor`.
+
+### Running the checks that need root
+
+A few checks (ufw rules, the NIC's Wake-on setting) can only be read as root. Run just those with sudo, and
+pass your `PATH` through so sudo can find a user-level install:
+
+```
+sudo env "PATH=$PATH" moonlight-host-doctor --only firewall --only wol --only tailscale
+```
+
+Do not run the whole tool under sudo: the `service` check asks about *your* user services, and root cannot see
+them, so it skips itself with a note. This works the same in bash, zsh and fish.
 
 ## Checks
 
@@ -52,7 +84,7 @@ Open a [test report](https://github.com/WitcherLXXIX/moonlight-host-doctor/issue
   guarantee waking from a full power-off.
 - UDP streaming ports only exist during a stream, so they are checked against firewall rules, not sockets.
 - Raw nftables/iptables rules are not checked, and neither are IPv6 rules.
-- Verified on one machine: CachyOS, KDE Plasma (Wayland), NVIDIA, ufw, NetworkManager, Tailscale.
+- Tested on Python 3.10 and 3.14. The checks themselves are verified on one machine: CachyOS, KDE Plasma (Wayland), NVIDIA, ufw, NetworkManager, Tailscale.
   The ufw parser is tested against real output from that machine; the firewalld parser only against
   strings written for the tests (see `tests/fixtures/README.md`). Reports and real output from other
   setups are the most useful contribution.

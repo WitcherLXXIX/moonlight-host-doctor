@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from conftest import ok
+from conftest import fail, fixture, ok
 
 from moonlight_host_doctor.cli import main, run_checks
 from moonlight_host_doctor.model import CHECKS, Status
@@ -72,3 +72,20 @@ def test_version_flag_prints_the_package_version(capsys):
         main(["--version"])
     assert stop.value.code == 0
     assert __version__ in capsys.readouterr().out
+
+
+def test_root_hints_use_a_command_that_sudo_can_find(make):
+    """A user-level install lives outside sudo's PATH, so the hint must pass PATH through."""
+    system = make(
+        {
+            "ufw status": fail("ERROR: You need to be root"),
+            "ethtool enp6s0": ok(fixture("ethtool_unprivileged.txt")),
+            "tailscale status --json": ok(fixture("tailscale_status_healthy.json")),
+            ("getent", "hosts", "linux.tail-example.ts.net"): ok(fixture("getent_tailscale_name.txt")),
+        },
+        paths={"/sys/class/net/enp6s0/device"},
+        dirs={"/sys/class/net": ["enp6s0"]},
+    )
+    hints = [step for r in run_checks(system) for step in r.fix if step.startswith("sudo")]
+    assert len(hints) == 3  # firewall, wol and the tailscale firewall check
+    assert all(step.startswith('sudo env "PATH=$PATH" moonlight-host-doctor --only ') for step in hints)

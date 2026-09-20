@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 
+from ..hints import sudo_rerun
 from ..model import Result, Status, check
 from ..system import System
 
@@ -63,7 +64,7 @@ def _fix(nic: str, connection: str | None) -> tuple[str, ...]:
 
 def _from_networkmanager(system: System, nic: str, connection: str | None) -> Result:
     unconfirmed = f"Cannot read {nic}'s Wake-on state without root."
-    rerun = ("sudo moonlight-host-doctor --only wol",)
+    rerun = (sudo_rerun("wol"),)
     if connection is None:
         return Result(ID, f"{TITLE} ({nic})", Status.SKIP, unconfirmed, rerun)
     value = system.run(["nmcli", "-g", "802-3-ethernet.wake-on-lan", "connection", "show", connection])

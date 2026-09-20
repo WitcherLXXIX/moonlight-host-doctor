@@ -42,3 +42,10 @@ def test_not_installed_fails(make):
 def test_no_systemd_is_skipped_not_failed(make):
     assert check_service(make({LIST: fail()}))[0].status is Status.SKIP
     assert check_service(make({}))[0].status is Status.SKIP
+
+
+def test_running_as_root_skips_with_a_hint_instead_of_reporting_root_sessions(make):
+    system = make({LIST: ok(fixture("systemctl_user_sunshine_running.txt"))}, root=True)
+    [result] = check_service(system)
+    assert result.status is Status.SKIP
+    assert result.fix == ("moonlight-host-doctor --only service",)

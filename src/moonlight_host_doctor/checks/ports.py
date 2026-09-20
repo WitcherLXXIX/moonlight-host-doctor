@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from ..hints import sudo_rerun
 from ..model import Result, Status, check
 from ..system import System
 
@@ -155,7 +156,7 @@ def check_firewall(system: System) -> list[Result]:
                 Result(
                     FIREWALL_ID, FIREWALL_TITLE, Status.SKIP,
                     "ufw is installed but its rules need root to read.",
-                    ("sudo moonlight-host-doctor --only firewall",),
+                    (sudo_rerun("firewall"),),
                 )
             ]
         active, rules = parse_ufw(status.stdout)

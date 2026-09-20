@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 from ipaddress import ip_network
 
+from ..hints import sudo_rerun
 from ..model import Result, Status, check
 from ..system import System
 from .ports import UfwRule, missing_ports, parse_ufw_rules
@@ -81,7 +82,7 @@ def _firewall_result(system: System) -> Result:
     shown = system.run(["ufw", "status"])
     if shown is None or shown.returncode != 0:
         return Result(ID, title, Status.SKIP, "ufw's rules need root to read.",
-                      ("sudo moonlight-host-doctor --only tailscale",))
+                      (sudo_rerun("tailscale"),))
     active, rules = parse_ufw_rules(shown.stdout)
     if not active:
         return Result(ID, title, Status.PASS, "ufw is inactive, so it blocks nothing.")
