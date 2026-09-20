@@ -1,0 +1,1 @@
+Wired connection 2:802-3-ethernet:enp6s0
