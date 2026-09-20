@@ -1,0 +1,57 @@
+name: Test report from my setup
+description: Tell us what moonlight-host-doctor said on your system, whether it was right or wrong.
+title: "Report: <distro> / <desktop> / <firewall>"
+labels: ["test-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports from setups other than the author's (CachyOS, KDE Plasma on Wayland, NVIDIA, ufw,
+        NetworkManager) are the most useful thing you can send. Wrong results matter as much as right ones.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `moonlight-host-doctor --version`
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your setup
+      description: Distro, desktop and display server (Wayland or X11), GPU, firewall (ufw, firewalld, nftables, none), how Sunshine was installed and its version, and whether you use Tailscale.
+      placeholder: "Fedora 43, GNOME on Wayland, AMD GPU, firewalld, Sunshine from the LizardByte RPM 2026.914, no Tailscale"
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output of `moonlight-host-doctor --redact`
+      description: Also run `sudo moonlight-host-doctor --redact --only firewall --only tailscale` if you can. Read it before posting, because hostnames and connection names are not masked.
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Was the tool right?
+      options:
+        - Right, and it pointed at my real problem
+        - Right, everything is fine and streaming works
+        - Wrong, it reported a problem that is not real (false alarm)
+        - Wrong, it missed a problem I actually have
+        - Crashed or printed an error
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What was wrong, or what did it miss?
+      description: What you expected to see and what your streaming problem actually was.
+  - type: checkboxes
+    id: redaction
+    attributes:
+      label: Before you submit
+      options:
+        - label: I read the output above and removed anything private that `--redact` does not mask.
+          required: true

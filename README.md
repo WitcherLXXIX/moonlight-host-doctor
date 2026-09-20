@@ -34,6 +34,12 @@ addresses and MAC addresses. It does **not** mask your hostname, interface names
 connection names (people sometimes name a connection after their Wi-Fi network), so read the output
 once before you post it.
 
+## Reporting results
+
+Output from setups other than the author's is the most useful contribution, including when the tool is wrong.
+Open a [test report](https://github.com/WitcherLXXIX/moonlight-host-doctor/issues/new?template=test-report.yml) with the output of
+`moonlight-host-doctor --redact`.
+
 ## Limits you should know about
 
 - Assumes Sunshine's default base port (47989). The required ports come from offsets in Sunshine's source:

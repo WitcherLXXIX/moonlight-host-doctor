@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 
-from . import checks  # noqa: F401  (registers the checks)
+from . import __version__, checks  # noqa: F401  (registers the checks)
 from .model import CHECKS, Result, Status
 from .redact import redact_result
 from .system import System
@@ -53,6 +53,7 @@ def main(argv: list[str] | None = None, system: System | None = None) -> int:
         description="Read-only checks for a Sunshine game-streaming host. It prints fix "
         "commands but never runs them.",
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--only", action="append", metavar="CHECK", help="run only this check (repeatable)")
     parser.add_argument("--list", action="store_true", help="list check names and exit")

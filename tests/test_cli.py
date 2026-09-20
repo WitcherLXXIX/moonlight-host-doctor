@@ -63,3 +63,12 @@ def test_the_tool_never_runs_a_command_that_changes_anything(make):
     assert issued, "checks should have issued commands"
     for argv in issued:
         assert not forbidden & set(argv[1:]), argv
+
+
+def test_version_flag_prints_the_package_version(capsys):
+    from moonlight_host_doctor import __version__
+
+    with pytest.raises(SystemExit) as stop:
+        main(["--version"])
+    assert stop.value.code == 0
+    assert __version__ in capsys.readouterr().out
