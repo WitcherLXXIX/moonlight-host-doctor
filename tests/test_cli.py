@@ -8,7 +8,7 @@ from sunshine_doctor.model import CHECKS, Status
 
 
 def test_all_checks_are_registered_in_running_order():
-    assert list(CHECKS) == ["service", "listening", "firewall", "wol"]
+    assert list(CHECKS) == ["service", "listening", "firewall", "wol", "tailscale"]
 
 
 def test_a_crashing_check_becomes_a_warning_and_does_not_hide_the_others(make, monkeypatch):
@@ -18,7 +18,7 @@ def test_a_crashing_check_becomes_a_warning_and_does_not_hide_the_others(make, m
     monkeypatch.setitem(CHECKS, "service", boom)
     results = run_checks(make({}))
     assert results[0].status is Status.WARN and "bad parse" in results[0].detail
-    assert {r.check for r in results} >= {"listening", "firewall", "wol"}
+    assert {r.check for r in results} >= {"listening", "firewall", "wol", "tailscale"}
 
 
 def test_exit_code_is_1_only_when_something_failed(make, capsys):
@@ -59,7 +59,7 @@ def test_the_tool_never_runs_a_command_that_changes_anything(make):
             return path.endswith("/device")
 
     run_checks(Recording())
-    forbidden = {"enable", "start", "stop", "restart", "add", "modify", "allow", "delete", "-s"}
+    forbidden = {"enable", "start", "stop", "restart", "add", "modify", "allow", "delete", "-s", "up", "down", "login", "set"}
     assert issued, "checks should have issued commands"
     for argv in issued:
         assert not forbidden & set(argv[1:]), argv

@@ -12,6 +12,7 @@ audio +11 are UDP. The web UI (+1) and microphone (+13) ports are not needed to 
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 from ..model import Result, Status, check
 from ..system import System
@@ -52,29 +53,48 @@ def _port_spec(spec: str) -> list[tuple[int, int]] | None:
     return ranges
 
 
-def parse_ufw(text: str) -> tuple[bool, list[Rule]]:
+@dataclass(frozen=True)
+class UfwRule:
+    proto: str
+    lo: int
+    hi: int
+    source: str | None  # None means "Anywhere"
+    iface: str | None  # set when the rule says "on <interface>"
+
+
+def parse_ufw_rules(text: str) -> tuple[bool, list[UfwRule]]:
     """Returns (active, allow rules) from `ufw status` output.
 
     IPv6 rules are skipped, and so are FWD/OUT rules. A rule limited to one interface
-    ("on enp5s0") or one source still counts, so a restricted rule can hide a real gap.
+    ("on enp5s0") or one source still counts here; the fields let callers decide.
     """
     if re.search(r"^Status:\s*inactive", text, re.MULTILINE):
         return False, []
-    rules: list[Rule] = []
+    rules: list[UfwRule] = []
     for line in text.splitlines():
         if "(v6)" in line:
             continue
-        match = re.match(r"^(\S+)(?:\s+on\s+\S+)?\s+ALLOW(?:\s+IN)?\s+(?!FWD|OUT)", line)
+        match = re.match(
+            r"^(\S+)(?:\s+on\s+(\S+))?\s+ALLOW(?:\s+IN)?\s+(?!FWD|OUT)(.*)$", line
+        )
         if not match:
             continue
-        spec = match.group(1)
+        spec, iface, rest = match.groups()
         spec, _, proto = spec.partition("/")
         ranges = _port_spec(spec)
         if ranges is None:
             continue  # an app profile name or "Anywhere"
+        source = rest.split("#")[0].split()[:1]
+        source = None if not source or source[0] == "Anywhere" else source[0]
         for proto_name in ((proto,) if proto in ("tcp", "udp") else ("tcp", "udp")):
-            rules.extend((proto_name, lo, hi) for lo, hi in ranges)
+            rules.extend(UfwRule(proto_name, lo, hi, source, iface) for lo, hi in ranges)
     return True, rules
+
+
+def parse_ufw(text: str) -> tuple[bool, list[Rule]]:
+    """Like parse_ufw_rules but as plain (protocol, first, last) tuples."""
+    active, rules = parse_ufw_rules(text)
+    return active, [(r.proto, r.lo, r.hi) for r in rules]
 
 
 def parse_firewalld_ports(text: str) -> list[Rule]:

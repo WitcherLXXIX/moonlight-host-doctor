@@ -23,6 +23,7 @@ Status: **early, v0.1.** Not affiliated with LizardByte or Moonlight.
 | `listening` | Sunshine is listening on its TCP ports | no |
 | `firewall` | ufw or firewalld allows the TCP and UDP ports | ufw: yes |
 | `wol` | Wired NIC is set to wake on a magic packet | to confirm at the NIC: yes |
+| `tailscale` | Tailscale is connected, reports no problems, its MagicDNS name resolves here, and ufw admits tailnet clients (skipped if Tailscale is not installed) | ufw part: yes |
 
 Options: `--only CHECK` (repeatable), `--json`, `--list`. Exit status is 1 if any check failed.
 
@@ -30,8 +31,10 @@ Options: `--only CHECK` (repeatable), `--json`, `--list`. Exit status is 1 if an
 
 - Assumes Sunshine's default base port (47989). The required ports come from offsets in Sunshine's source:
   TCP 47984, 47989, 48010 and UDP 47998, 47999, 48000. The web UI (47990) and mic (48002) ports are not required.
-- A firewall rule limited to one source or interface still counts as allowing the port, so a rule
-  that only covers your LAN will not be flagged for a client arriving over Tailscale.
+- The `firewall` check counts a rule limited to one source or interface as allowing the port. The
+  `tailscale` check is stricter and flags rules that cannot admit a client from 100.64.0.0/10.
+- Waking a host from outside its LAN needs another always-on device on that network (for example a
+  Tailscale subnet router). That is not checked.
 - The BIOS/UEFI wake-on-LAN option cannot be read from Linux, so a passing `wol` check does not
   guarantee waking from a full power-off.
 - UDP streaming ports only exist during a stream, so they are checked against firewall rules, not sockets.

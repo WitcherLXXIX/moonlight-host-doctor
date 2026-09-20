@@ -1,0 +1,22 @@
+{
+  "Version": "1.102.4",
+  "TUN": true,
+  "BackendState": "NeedsLogin",
+  "HaveNodeKey": true,
+  "AuthURL": "https://login.tailscale.com/a/example",
+  "TailscaleIPs": [],
+  "Self": {
+    "HostName": "Linux",
+    "DNSName": "linux.tail-example.ts.net.",
+    "OS": "linux",
+    "Online": true,
+    "TailscaleIPs": []
+  },
+  "Health": [],
+  "MagicDNSSuffix": "tail-example.ts.net",
+  "CurrentTailnet": {
+    "Name": "user@example.com",
+    "MagicDNSSuffix": "tail-example.ts.net",
+    "MagicDNSEnabled": true
+  }
+}
